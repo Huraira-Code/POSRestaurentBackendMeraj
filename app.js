@@ -14,7 +14,7 @@ connectDB();
 // Middlewares
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:5173' , "https://resataurentsystem.netlify.app" , "https://restaurentpos.netlify.app","https://newyorkguyspos.miteminds.com" , "http://localhost:3000" ]
+    origin: ['http://localhost:5173' , "https://resataurentsystem.netlify.app" , "https://restaurentpos.netlify.app","https://newyorkguyspos.miteminds.com" , "http://localhost:3000" , "https://possystemz.netlify.app" ]
 }))
 app.use(express.json()); // parse incoming request in json format
 app.use(cookieParser())
