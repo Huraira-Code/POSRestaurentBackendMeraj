@@ -483,11 +483,10 @@ const printDailySalesReportAndCloseDay = async (req, res, next) => {
       if (order.orderNumber > highestOrderNumberProcessed) {
         highestOrderNumberProcessed = order.orderNumber;
       }
+      totalDeliveryFees += order.deliveryFees || 0; // ✅ Add this line
 
       order.items.forEach((item) => {
         for (let i = 0; i < item.quantity; i++) {
-          totalDeliveryFees += item.deliveryFees || 0;
-
           itemsSoldSummary.push({
             itemId: item.itemId,
             name: item.name,
