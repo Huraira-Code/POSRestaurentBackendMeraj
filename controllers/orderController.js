@@ -450,6 +450,7 @@ const printDailySalesReportAndCloseDay = async (req, res, next) => {
     let totalTaxCollected = 0;
     let totalSavingsGiven = 0;
     let totalVoucherDiscount = 0;
+    let totalDeliveryFees = 0;
 
     const itemsSoldSummary = [];
     const dealsSoldSummary = [];
@@ -483,9 +484,10 @@ const printDailySalesReportAndCloseDay = async (req, res, next) => {
         highestOrderNumberProcessed = order.orderNumber;
       }
 
-      // --- Items ---
       order.items.forEach((item) => {
         for (let i = 0; i < item.quantity; i++) {
+          totalDeliveryFees += item.deliveryFees || 0;
+
           itemsSoldSummary.push({
             itemId: item.itemId,
             name: item.name,
@@ -522,27 +524,27 @@ const printDailySalesReportAndCloseDay = async (req, res, next) => {
       }
     });
 
-  //  // --- Mark orders as closed ---
-  //   await Order.updateMany(
-  //     { _id: { $in: ordersToClose.map((order) => order._id) } },
-  //     { $set: { isEndOfDayClosed: true } }
-  //   );
+    //  // --- Mark orders as closed ---
+    //   await Order.updateMany(
+    //     { _id: { $in: ordersToClose.map((order) => order._id) } },
+    //     { $set: { isEndOfDayClosed: true } }
+    //   );
 
-  //   // --- Reset Daily Counter ---
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
+    //   // --- Reset Daily Counter ---
+    //   const today = new Date();
+    //   today.setHours(0, 0, 0, 0);
 
-  //   // Reset counter for specific admin
-  //   await Counter.findOneAndUpdate(
-  //     { adminId, counterName: "orderNumber" }, // match admin + type of counter
-  //     {
-  //       $set: {
-  //         sequence_value: 0,
-  //         last_reset_date: today,
-  //       },
-  //     },
-  //     { upsert: true } // if not exists, create it
-  //   );
+    //   // Reset counter for specific admin
+    //   await Counter.findOneAndUpdate(
+    //     { adminId, counterName: "orderNumber" }, // match admin + type of counter
+    //     {
+    //       $set: {
+    //         sequence_value: 0,
+    //         last_reset_date: today,
+    //       },
+    //     },
+    //     { upsert: true } // if not exists, create it
+    //   );
 
     // --- Build Sales Report ---
     const salesReport = {
@@ -553,6 +555,7 @@ const printDailySalesReportAndCloseDay = async (req, res, next) => {
       totalSalesAmount: parseFloat(totalSalesAmount.toFixed(2)),
       totalTaxCollected: parseFloat(totalTaxCollected.toFixed(2)),
       totalSavingsGiven: parseFloat(totalSavingsGiven.toFixed(2)),
+      totalDeliveryFees: parseFloat(totalDeliveryFees.toFixed(2)), // ✅ Added
       totalVoucherDiscount: parseFloat(totalVoucherDiscount.toFixed(2)),
       lastOrderNumberInThisReport: highestOrderNumberProcessed,
       itemsSoldSummary: itemsSoldSummary.map((item) => ({
