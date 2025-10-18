@@ -522,27 +522,27 @@ const printDailySalesReportAndCloseDay = async (req, res, next) => {
       }
     });
 
-   // --- Mark orders as closed ---
-    await Order.updateMany(
-      { _id: { $in: ordersToClose.map((order) => order._id) } },
-      { $set: { isEndOfDayClosed: true } }
-    );
+  //  // --- Mark orders as closed ---
+  //   await Order.updateMany(
+  //     { _id: { $in: ordersToClose.map((order) => order._id) } },
+  //     { $set: { isEndOfDayClosed: true } }
+  //   );
 
-    // --- Reset Daily Counter ---
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  //   // --- Reset Daily Counter ---
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
 
-    // Reset counter for specific admin
-    await Counter.findOneAndUpdate(
-      { adminId, counterName: "orderNumber" }, // match admin + type of counter
-      {
-        $set: {
-          sequence_value: 0,
-          last_reset_date: today,
-        },
-      },
-      { upsert: true } // if not exists, create it
-    );
+  //   // Reset counter for specific admin
+  //   await Counter.findOneAndUpdate(
+  //     { adminId, counterName: "orderNumber" }, // match admin + type of counter
+  //     {
+  //       $set: {
+  //         sequence_value: 0,
+  //         last_reset_date: today,
+  //       },
+  //     },
+  //     { upsert: true } // if not exists, create it
+  //   );
 
     // --- Build Sales Report ---
     const salesReport = {
